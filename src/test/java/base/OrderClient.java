@@ -16,8 +16,7 @@ public class OrderClient extends BaseAPI {
     @Description("POST на ручку api/v1/orders")
 
     public Response createOrder(Order order) {
-        return given(RequestSpecification())
-                .header("Content-type", "application/json")
+        return given(requestSpecification())
                 .and()
                 .body(order)
                 .when()
@@ -28,7 +27,7 @@ public class OrderClient extends BaseAPI {
     @Description("GET  на ручку api/v1/orders")
 
     public Response getOrder() {
-        return given(RequestSpecification()) //
+        return given(requestSpecification()) //
                 .get(PathAPI.ORDER_BASE_URL);
     }
 }

@@ -10,17 +10,13 @@ import static io.restassured.RestAssured.given;
 
 public class CourierClient extends BaseAPI {
 
-    public CourierClient()  {
-
-    }
 
     @Step("Метод создание курьера")
     @Description("POST на ручку /api/v1/courier")
     public Response createCourier(Courier courier) {
         return
 
-                given(RequestSpecification())
-                        .header("Content-type", "application/json") // Строка указывает, что данные в теле запроса передаются в формате JSON
+                given(requestSpecification())
                         .and()
                         .body(courier)
                         .when()
@@ -31,12 +27,27 @@ public class CourierClient extends BaseAPI {
     @Description("POST на ручку /api/v1/courier/login")
     public Response loginCourier(Courier courier) {
         return
-                given(RequestSpecification())
-                        .header("Content-type", "application/json")
+                given(requestSpecification())
                         .and()
                         .body(courier)
                         .when()
                         .post(PathAPI.COURIER_LOGIN);
     }
+    @Step("Удалить курьера из системы")
+    @Description("DELETE на ручку /api/v1/courier/:id")
+    public void deleteCourier(Courier courier) {
+        try {
+            int id = loginCourier(courier).then().extract().path("id");
 
+
+            given(requestSpecification()) // вызываем метод RequestSpecification(), где хранится Base url
+                    .and()
+                    .body(courier)
+                    .when()
+                    .delete(PathAPI.COURIER_BASE_URL + id);
+
+        } catch (NullPointerException e) {
+            System.out.println("Нечего удалять после теста");
+        }
+    }
 }

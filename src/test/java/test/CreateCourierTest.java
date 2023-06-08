@@ -107,5 +107,8 @@ public class CreateCourierTest {
                 .assertThat()
                 .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
     }
-
+    @After
+    public void deleteCourier() {
+        courierClient.deleteCourier(courier);
+    }
 }
