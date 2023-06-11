@@ -4,6 +4,7 @@ import base.CourierClient;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Test;
 import pojo.Courier;
@@ -27,29 +28,10 @@ public class CreateCourierTest {
     public void checkStatusForCreateSameCourier() {
         courierClient.createCourier(courier)
                 .then()
-                .assertThat().statusCode(201);
+                .assertThat().statusCode(201)
+                .and().body("ok", equalTo(true));;
     }
 
-    @Test
-    @DisplayName("Запрос с повторяющимся логином")
-    @Description("Ожидаемый результат: код ошибки 409.")
-
-    public void checkStatusForDuplicationCreateCourier() {
-        courierClient.createCourier(courier);
-        courierClient.createCourier(courier)
-                .then()
-                .assertThat().statusCode(409);
-    }
-
-    @Test
-    @DisplayName("Проверка тела ответа")
-    @Description("Ожидаемый результат: ok, true")
-
-    public void checkBodyForCreateSameCourier() {
-        courierClient.createCourier(courier)
-                .then()
-                .assertThat().body("ok", equalTo(true));
-    }
 
     @Test
     @DisplayName("Запрос без логина")
@@ -59,8 +41,10 @@ public class CreateCourierTest {
         courier = new Courier("", randomPassword, randomName);
         courierClient.createCourier(courier)
                 .then()
-                .assertThat().statusCode(400);
+                .assertThat().body("message", Matchers.equalTo("Недостаточно данных для создания учетной записи"))
+                .and().statusCode(400);
     }
+
 
     @Test
     @DisplayName("Запрос без пароля")
@@ -70,31 +54,10 @@ public class CreateCourierTest {
         courier = new Courier(randomLogin, "", randomName);
         courierClient.createCourier(courier)
                 .then()
-                .assertThat().statusCode(400);
+                .assertThat().body("message", Matchers.equalTo("Недостаточно данных для создания учетной записи"))
+                .and().statusCode(400);
     }
 
-    @Test
-    @DisplayName("Проверка запроса без логина")
-    @Description("Ожидаемый результат: \"Недостаточно данных для создания учетной записи\"")
-
-    public void checkCreateCourierWithoutLogin() {
-        courier = new Courier("",randomPassword, randomName);
-        courierClient.createCourier(courier)
-                .then()
-                .assertThat().body("message",equalTo("Недостаточно данных для создания учетной записи"));
-    }
-
-    @Test
-    @DisplayName("Проверка запроса без пароля")
-    @Description("Ожидаемый результат:  \"Недостаточно данных для создания учетной записи\"")
-
-    public void checkCreateCourierWithoutPassword() {
-        courier = new Courier(randomLogin,"", randomName);
-        courierClient.createCourier(courier)
-                .then()
-                .assertThat().
-                body("message",equalTo("Недостаточно данных для создания учетной записи"));
-    }
 
     @Test
     @DisplayName("Проверка запроса с таким же логином")
@@ -105,7 +68,8 @@ public class CreateCourierTest {
         courierClient.createCourier(courier)
                 .then()
                 .assertThat()
-                .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
+                .body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
+                .and().statusCode(409);
     }
     @After
     public void deleteCourier() {

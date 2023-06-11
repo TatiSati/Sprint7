@@ -19,6 +19,6 @@ public class GetOrderTest {
 
         orderClient.getOrder()
                 .then()
-                .body("orders", notNullValue());
+                .body("orders", hasSize(greaterThan(0)));
     }
 }
