@@ -28,8 +28,10 @@ public class CreateCourierTest {
     public void checkStatusForCreateSameCourier() {
         courierClient.createCourier(courier)
                 .then()
-                .assertThat().statusCode(201)
-                .and().body("ok", equalTo(true));;
+                .assertThat()
+                .statusCode(201)
+                .and()
+                .body("ok", equalTo(true));
     }
 
 
@@ -41,8 +43,11 @@ public class CreateCourierTest {
         courier = new Courier("", randomPassword, randomName);
         courierClient.createCourier(courier)
                 .then()
-                .assertThat().body("message", Matchers.equalTo("Недостаточно данных для создания учетной записи"))
-                .and().statusCode(400);
+                .assertThat()
+                .statusCode(400)
+                .and()
+                .body("message", Matchers.equalTo("Недостаточно данных для создания учетной записи"));
+
     }
 
 
@@ -54,8 +59,10 @@ public class CreateCourierTest {
         courier = new Courier(randomLogin, "", randomName);
         courierClient.createCourier(courier)
                 .then()
-                .assertThat().body("message", Matchers.equalTo("Недостаточно данных для создания учетной записи"))
-                .and().statusCode(400);
+                .assertThat()
+                .statusCode(400)
+                .and()
+                .body("message", Matchers.equalTo("Недостаточно данных для создания учетной записи"));
     }
 
 
@@ -68,8 +75,9 @@ public class CreateCourierTest {
         courierClient.createCourier(courier)
                 .then()
                 .assertThat()
-                .body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
-                .and().statusCode(409);
+                .statusCode(409)
+                .and()
+                .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
     }
     @After
     public void deleteCourier() {

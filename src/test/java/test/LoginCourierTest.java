@@ -28,7 +28,9 @@ public class LoginCourierTest {
         courierClient.loginCourier(courier)
                 .then()
                 .assertThat()
-                .statusCode(200); // проверка статуса ответа
+                .statusCode(200)
+                .and()
+                .body("id",notNullValue());// проверка статуса ответа
     }
 
     @Test
@@ -72,17 +74,6 @@ public class LoginCourierTest {
                 .statusCode(404)
                 .and()
                 .body("message", equalTo("Учетная запись не найдена"));
-    }
-
-    @Test
-    @DisplayName("Происходит проверка, что корректный запрос возвращает id курьера в системе + код 200")
-    @Description("Ожидаемый результат: id курьера в случае успешного запроса")
-    public void checkBodyWithIdForValidLoginCourier() {
-        courierClient.createCourier(courier);
-        courierClient.loginCourier(courier)
-                .then()
-                .assertThat()
-                .body("id",notNullValue()); // Матчер notNullValue() проверяет, что аргумент метода assertThat — не null-значение
     }
 
 
